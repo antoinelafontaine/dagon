@@ -8,6 +8,43 @@ directory="${BASH_SOURCE%/*}"
 m.status "\nDagon will do your bidding. Sit back and enjoy...\n"
 sleep 0.5 
 
+flag.check bashCommands
+if [ $? == 1 ]; then
+  m.status "Checking bash standard commands."
+  requirements.set "eval sleep printf read hash tput dirname mkdir chmod chgrp"
+    requirements.failure eval abort
+    requirements.failure sleep abort
+    requirements.failure printf abort
+    requirements.failure read abort
+    requirements.failure hash abort
+    requirements.failure dirname abort
+    requirements.failure git abort
+    requirements.failure easy_install abort
+    requirements.failure tput abort
+    requirements.failure mkdir abort
+    requirements.failure chmod abort
+    requirements.failure chgrp abort
+  requirements.check
+
+  flag.set bashCommands
+fi
+
+username=$USER
+repository="none so far"
+export ANSIBLE_ASK_SUDO_PASS=True
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+m.status "Checking for git."
+requirements.set "git"
+  requirements.failure git abort
+requirements.check
+
+m.status "Checking for ansible and dependencies."
+requirements.set "easy_install pip ansible"
+  requirements.failure pip "sudo easy_install --quiet pip"
+  requirements.failure ansible "sudo pip install --quiet ansible"
+requirements.check
+
 flag.check folders
 if [ $? == 1 ]; then
   m.status "Creating necessary folders. (You will be asked for your sudo password if needed)" 
@@ -20,31 +57,11 @@ if [ $? == 1 ]; then
   flag.set folders
 fi
 
+flag.check config
+if [ $? == 1 ]; then
+  m.status "Cloning configuration repository"
+  git clone --quiet https://github.com/antoinelafontaine/dagon-config.git /usr/local/dagon/config
+  flag.set config  
+fi
+
 cd /usr/local/dagon
-
-username=$USER
-repository="none so far"
-export ANSIBLE_ASK_SUDO_PASS=True
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-
-requirements.set "eval sleep printf read hash tput dirname easy_install"
-  requirements.failure eval abort
-  requirements.failure sleep abort
-  requirements.failure printf abort
-  requirements.failure read abort 
-  requirements.failure hash abort
-  requirements.failure dirname abort
-  requirements.failure easy_install abort
-  requirements.failure tput abort
-requirements.check
-
-requirements.set "pip ansible"
-  requirements.failure pip "sudo easy_install --quiet pip"
-  requirements.failure ansible "sudo pip install --quiet ansible"
-requirements.check
-
-# m.status "Creating folders"
-# sudo mkdir -p /usr/local/dagon
-# sudo mkdir -p /usr/local/dagon/roles
-# sudo chmod -R g+rwx /usr/local
-# sudo chgrp -R admin /usr/local
