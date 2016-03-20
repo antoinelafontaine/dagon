@@ -8,10 +8,22 @@ directory="${BASH_SOURCE%/*}"
 m.status "\nDagon will do your bidding. Sit back and enjoy...\n"
 sleep 0.5 
 
+flag.check folders
+if [ $? == 1 ]; then
+  m.status "Creating necessary folders. (You will be asked for your sudo password if needed)"
+  sudo mkdir -p "/usr/local/dagon"
+  sudo mkdir -p "/usr/local/dagon/roles"
+  sudo mkdir -p "/usr/local/dagon/flags"
+  sudo chmod -R g+rwx /usr/local
+  sudo chgrp -R admin /usr/local
+
+  flag.set folders
+fi
+
 flag.check bashCommands
 if [ $? == 1 ]; then
   m.status "Checking bash standard commands."
-  requirements.set "eval sleep printf read hash tput dirname mkdir chmod chgrp"
+  requirements.set "eval sleep printf read hash tput"
     requirements.failure eval abort
     requirements.failure sleep abort
     requirements.failure printf abort
@@ -19,9 +31,6 @@ if [ $? == 1 ]; then
     requirements.failure hash abort
     requirements.failure dirname abort
     requirements.failure tput abort
-    requirements.failure mkdir abort
-    requirements.failure chmod abort
-    requirements.failure chgrp abort
   requirements.check
 
   flag.set bashCommands
