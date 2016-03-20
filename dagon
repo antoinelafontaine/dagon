@@ -38,8 +38,7 @@ fi
 
 username=$USER
 repository="none so far"
-export ANSIBLE_ASK_SUDO_PASS=True
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+# export ANSIBLE_ASK_SUDO_PASS=True
 
 m.status "Checking for git."
 requirements.set "git"
@@ -65,11 +64,38 @@ if [ $? == 1 ]; then
   flag.set folders
 fi
 
+if [ -d "/usr/local/dagon/config" ]; then
+  m.status "Updating your config from origin."
+  cd /usr/local/dagon/config
+  git pull -q
+fi
+
 flag.check config
 if [ $? == 1 ]; then
-  m.status "Cloning configuration repository"
+  m.status "Cloning configuration repository."
   git clone --quiet https://github.com/antoinelafontaine/dagon-config.git /usr/local/dagon/config
   flag.set config  
 fi
 
 cd /usr/local/dagon
+
+flag.check ansibleConfig
+if [ $? == 1 ]; then
+  m.status "Creating ansible.cfg file."
+  cat <<- --EOF > ansible.cfg
+	[defaults]
+	roles_path=/usr/local/dagon/roles:/usr/local/dagon/config/roles
+--EOF
+
+  flag.set ansibleConfig
+fi
+
+m.status "Get requirements from Ansible Galaxy"
+ansible-galaxy install --role-file=config/requirements.yml --roles-path=roles
+
+if [ -f "config/$username.yml" ]; then
+  m.status "Runnning Ansible playbook for $username."
+  ansible-playbook -i "localhost," config/$username.yml
+else
+  m.error "No Ansible playbook for $username found!"
+fi
