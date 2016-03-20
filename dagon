@@ -18,8 +18,6 @@ if [ $? == 1 ]; then
     requirements.failure read abort
     requirements.failure hash abort
     requirements.failure dirname abort
-    requirements.failure git abort
-    requirements.failure easy_install abort
     requirements.failure tput abort
     requirements.failure mkdir abort
     requirements.failure chmod abort
@@ -41,6 +39,7 @@ requirements.check
 
 m.status "Checking for ansible and dependencies."
 requirements.set "easy_install pip ansible"
+  requirements.failure easy_install abort
   requirements.failure pip "sudo easy_install --quiet pip"
   requirements.failure ansible "sudo pip install --quiet ansible"
 requirements.check
