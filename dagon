@@ -38,7 +38,7 @@ fi
 
 username=$USER
 repository="none so far"
-# export ANSIBLE_ASK_SUDO_PASS=True
+export ANSIBLE_ASK_SUDO_PASS=True
 
 m.status "Checking for git."
 requirements.set "git"
@@ -90,7 +90,7 @@ if [ $? == 1 ]; then
   flag.set ansibleConfig
 fi
 
-m.status "Get requirements from Ansible Galaxy"
+m.status "Get requirements using Ansible Galaxy"
 ansible-galaxy install --role-file=config/requirements.yml --roles-path=roles
 
 if [ -f "config/$username.yml" ]; then
