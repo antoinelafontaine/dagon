@@ -6,7 +6,7 @@ directory="${BASH_SOURCE%/*}"
 . "$directory/includes/requirements.sh"
 
 m.status "\nDagon will do your bidding. Sit back and enjoy...\n"
-sleep 0.5 
+sleep 0.5
 
 flag.check folders
 if [ $? == 1 ]; then
@@ -20,9 +20,9 @@ if [ $? == 1 ]; then
   flag.set folders
 fi
 
+m.status "Checking bash requirements"
 flag.check bashCommands
 if [ $? == 1 ]; then
-  m.status "Checking bash standard commands."
   requirements.set "eval sleep printf read hash tput"
     requirements.failure eval abort
     requirements.failure sleep abort
@@ -37,15 +37,12 @@ if [ $? == 1 ]; then
 fi
 
 username=$USER
-repository="none so far"
 export ANSIBLE_ASK_SUDO_PASS=True
 
-m.status "Checking for git."
 requirements.set "git"
   requirements.failure git abort
 requirements.check
 
-m.status "Checking for ansible and dependencies."
 requirements.set "easy_install pip ansible"
   requirements.failure easy_install abort
   requirements.failure pip "sudo easy_install --quiet pip"
@@ -54,13 +51,13 @@ requirements.check
 
 flag.check folders
 if [ $? == 1 ]; then
-  m.status "Creating necessary folders. (You will be asked for your sudo password if needed)" 
+  m.status "Creating necessary folders. (You will be asked for your sudo password if needed)"
   sudo mkdir -p "/usr/local/dagon"
   sudo mkdir -p "/usr/local/dagon/roles"
   sudo mkdir -p "/usr/local/dagon/flags"
   sudo chmod -R g+rwx /usr/local
   sudo chgrp -R admin /usr/local
-  
+
   flag.set folders
 fi
 
@@ -74,7 +71,7 @@ flag.check config
 if [ $? == 1 ]; then
   m.status "Cloning configuration repository."
   git clone --quiet https://github.com/antoinelafontaine/dagon-config.git /usr/local/dagon/config
-  flag.set config  
+  flag.set config
 fi
 
 cd /usr/local/dagon
@@ -84,18 +81,18 @@ if [ $? == 1 ]; then
   m.status "Creating ansible.cfg file."
   cat <<- --EOF > ansible.cfg
 	[defaults]
-	roles_path=/usr/local/dagon/roles:/usr/local/dagon/config/roles
+	roles_path=/usr/local/dagon/roles/dev:/usr/local/dagon/roles:/usr/local/dagon/config/roles
 --EOF
 
   flag.set ansibleConfig
 fi
 
-m.status "Get requirements using Ansible Galaxy"
+m.status "\nGet requirements using Ansible Galaxy"
 ansible-galaxy install --role-file=config/requirements.yml --roles-path=roles
 
 if [ -f "config/$username.yml" ]; then
-  m.status "Runnning Ansible playbook for $username."
+  m.status "\nRunnning Ansible playbook for $username."
   ansible-playbook -i "localhost," config/$username.yml
 else
-  m.error "No Ansible playbook for $username found!"
+  m.error "\nNo Ansible playbook for $username found!"
 fi
