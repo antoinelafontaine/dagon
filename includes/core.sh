@@ -5,7 +5,7 @@ flag._checkFlagFolderExists() {
   if [ $? == 1 ]; then
     return 1
   fi
-  if [ -d ./flags/ ]; then
+  if [ -d ./.dagon/flags/ ]; then
     return 0
   fi
   return 1
@@ -13,7 +13,7 @@ flag._checkFlagFolderExists() {
 flag.check() {
   flag._checkFlagFolderExists
   if [ $? != 1 ]; then
-    if [ -e "./flags/${1}" ]; then
+    if [ -e "./.dagon/flags/${1}" ]; then
       return 0
     fi
   fi
@@ -21,12 +21,11 @@ flag.check() {
 }
 
 flag.set() {
-  flag._checkFlagFolderExists 
-  touch "./flags/${1}"
+  flag._checkFlagFolderExists
+  touch "./.dagon/flags/${1}"
 }
 
-sudo.keepalive() {
-  sudo -v
-  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>&-
+flag.remove() {
+  flag._checkFlagFolderExists
+  rm "./.dagon/flags/${1}"
 }
-

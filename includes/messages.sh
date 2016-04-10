@@ -5,7 +5,7 @@ m.status() {
 }
 
 m.error() {
-  printf "     [x] - ${1}\n\n"
+  printf "[x] - ${1}\n\n"
   exit 1
 }
 
@@ -29,7 +29,7 @@ m.progress() {
   _empty=$(printf "%${_left}s")
   _terminal_width=$(tput cols)
   _blank=$(printf "%${_terminal_width}s" " ")
-  
+
   printf "\r${_blank// / }\rProgress : [${_fill// /#}${_empty// /-}] - $3"
   if [ ${_progress} == "100" ]; then
     printf "\n"
