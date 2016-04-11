@@ -1,0 +1,4 @@
+.dagon/
+ansible.cfg
+config/
+roles/
