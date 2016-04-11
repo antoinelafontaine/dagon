@@ -19,7 +19,7 @@ if [ $? == 1 ]; then
   sudo mkdir -p "/usr/local/dagon/.dagon/flags"
   sudo mkdir -p "/usr/local/dagon/.dagon/config"
   sudo chmod -R g+rwx /usr/local
-  sudo chgrp -R $username /usr/local
+  sudo chgrp -R admin /usr/local
 
   flag.set folders
 fi
@@ -51,6 +51,16 @@ if [ $? == 1 ]; then
   flag.set bash_commands
 fi
 
+requirements.set "git"
+  requirements.failure git abort
+requirements.check
+
+requirements.set "easy_install pip ansible"
+  requirements.failure easy_install abort
+  requirements.failure pip "sudo easy_install --quiet pip"
+  requirements.failure ansible "sudo pip install --quiet ansible"
+requirements.check
+
 if [ -f /usr/local/dagon/.dagon/config/repo ]; then
   config_repo="$(cat /usr/local/dagon/.dagon/config/repo_url)"
 else
@@ -67,16 +77,6 @@ else
     m.error "Please provide a repo name."
   fi
 fi
-
-requirements.set "git"
-  requirements.failure git abort
-requirements.check
-
-requirements.set "easy_install pip ansible"
-  requirements.failure easy_install abort
-  requirements.failure pip "sudo easy_install --quiet pip"
-  requirements.failure ansible "sudo pip install --quiet ansible"
-requirements.check
 
 # if [ -d "/usr/local/dagon/config" ]; then
 #   m.status "Updating your config from origin."
