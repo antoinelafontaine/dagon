@@ -65,7 +65,7 @@ requirements.set "easy_install pip ansible"
   requirements.failure ansible "sudo pip install --quiet ansible"
 requirements.check
 
-if [ -f /usr/local/dagon/.dagon/config/repo ]; then
+if [ -f /usr/local/dagon/.dagon/config/repo_url ]; then
   config_repo="$(cat /usr/local/dagon/.dagon/config/repo_url)"
 else
   m.status "Where is your config repository located?"
