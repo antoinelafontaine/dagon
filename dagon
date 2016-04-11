@@ -1,6 +1,10 @@
 #!/bin/bash
 
 directory="${BASH_SOURCE%/*}"
+if [ -L "${directory}/dagon" ]; then
+  directory='/usr/local/dagon'
+fi
+
 . "$directory/includes/core.sh"
 . "$directory/includes/messages.sh"
 . "$directory/includes/requirements.sh"
@@ -29,7 +33,7 @@ if [ $? == 1 ]; then
   if [ -f /usr/local/dagon/dagon ]; then
     m.status "Making dagon available everywhere."
     sudo chmod +x /usr/local/dagon/dagon
-    ln -s /usr/local/dagon/dagon /usr/local/bin/dagon
+    ln -sf /usr/local/dagon/dagon /usr/local/bin/dagon
   fi
 
   flag.set symlink
