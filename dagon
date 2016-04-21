@@ -33,7 +33,7 @@ if [ $? == 1 ]; then
   m.status "Creating necessary folders. (You will be asked for your sudo password if needed)"
   sudo mkdir -p "/usr/local/dagon/roles"
   sudo mkdir -p "/usr/local/dagon/flags"
-  sudo mkdir -p "~/.dagon"
+  sudo mkdir -p "/Users/${username}/.dagon"
   sudo chmod -R g+rwx /usr/local
   sudo chgrp -R admin /usr/local
 
