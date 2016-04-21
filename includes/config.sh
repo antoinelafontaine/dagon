@@ -4,7 +4,7 @@ configuration.setup() {
 
   if [ ! -f ~/.dagon/config ]; then
     m.status "Creating ~/.dagon/config"
-    touch ~/.dagon/config
+    touch /Users/${username}/.dagon/config
     /Users/${username}/Library/Python/2.7/bin/crudini --set ~/.dagon/config core
     /Users/${username}/Library/Python/2.7/bin/crudini --set ~/.dagon/config project
   else
