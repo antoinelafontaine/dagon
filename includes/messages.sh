@@ -16,7 +16,7 @@ m.clearline() {
 
 m.progress() {
 
-  if [ ${1} == 'abort' ]; then
+  if [ "${1}" == 'abort' ]; then
     printf " Aborted!\n"
     return 0
   fi
@@ -35,4 +35,3 @@ m.progress() {
     printf "\n"
   fi
 }
-

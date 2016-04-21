@@ -2,12 +2,14 @@
 
 directory="${BASH_SOURCE%/*}"
 if [ -L "${directory}/dagon" ]; then
+  # once dagon is symlinked, we can assume where it is located
   directory='/usr/local/dagon'
 fi
 
 . "$directory/includes/core.sh"
 . "$directory/includes/messages.sh"
 . "$directory/includes/requirements.sh"
+. "$directory/includes/config.sh"
 
 username=$USER
 export ANSIBLE_ASK_SUDO_PASS=True
@@ -15,28 +17,27 @@ export ANSIBLE_ASK_SUDO_PASS=True
 m.status "\nDagon will do your bidding. Sit back and enjoy...\n"
 sleep 0.5
 
-flag.check folders
-if [ $? == 1 ]; then
-  m.status "Creating necessary folders. (You will be asked for your sudo password if needed)"
-  sudo mkdir -p "/usr/local/dagon/roles"
-  sudo mkdir -p "/usr/local/dagon/.dagon"
-  sudo mkdir -p "/usr/local/dagon/.dagon/flags"
-  sudo mkdir -p "/usr/local/dagon/.dagon/config"
-  sudo chmod -R g+rwx /usr/local
-  sudo chgrp -R admin /usr/local
-
-  flag.set folders
-fi
-
 flag.check symlink
 if [ $? == 1 ]; then
   if [ -f /usr/local/dagon/dagon ]; then
-    m.status "Making dagon available everywhere."
+    m.status "Symlinking Dagon so is it available anywhere."
     sudo chmod +x /usr/local/dagon/dagon
     ln -sf /usr/local/dagon/dagon /usr/local/bin/dagon
   fi
 
   flag.set symlink
+fi
+
+flag.check folders
+if [ $? == 1 ]; then
+  m.status "Creating necessary folders. (You will be asked for your sudo password if needed)"
+  sudo mkdir -p "/usr/local/dagon/roles"
+  sudo mkdir -p "/usr/local/dagon/flags"
+  sudo mkdir -p "~/.dagon"
+  sudo chmod -R g+rwx /usr/local
+  sudo chgrp -R admin /usr/local
+
+  flag.set folders
 fi
 
 m.status "Checking bash requirements"
@@ -59,34 +60,14 @@ requirements.set "git"
   requirements.failure git abort
 requirements.check
 
-requirements.set "easy_install pip ansible"
+requirements.set "easy_install pip crudini ansible"
   requirements.failure easy_install abort
   requirements.failure pip "sudo easy_install --quiet pip"
+  requirements.failure crudini "export PATH=$PATH:~/Library/Python/2.7/bin && pip install --user --quiet crudini"
   requirements.failure ansible "sudo pip install --quiet ansible"
 requirements.check
 
-if [ -f /usr/local/dagon/.dagon/config/repo_url ]; then
-  config_repo="$(cat /usr/local/dagon/.dagon/config/repo_url)"
-else
-  m.status "Where is your config repository located?"
-  read config_repo
-  if [ -n "$config_repo" ]; then
-    echo $config_repo | grep --quiet '^["git"|"ssh"|"http"|"https"|"git@"].*:.*[".git"|".git\/"]$'
-    if [ $? == 0 ]; then
-      echo $config_repo > /usr/local/dagon/.dagon/config/repo_url
-    else
-      m.error "This doesn't look like a git repo."
-    fi
-  else
-    m.error "Please provide a repo name."
-  fi
-fi
-
-# if [ -d "/usr/local/dagon/config" ]; then
-#   m.status "Updating your config from origin."
-#   cd /usr/local/dagon/config
-#   git pull -q
-# fi
+configuration.setup
 
 flag.check config_repo
 if [ $? == 1 ]; then
@@ -115,5 +96,5 @@ if [ -f "config/$username.yml" ]; then
   m.status "\nRunnning Ansible playbook for $username."
   ansible-playbook -i "localhost," config/$username.yml
 else
-  m.error "\nNo Ansible playbook for $username found!"
+  m.error "No Ansible playbook for $username found!"
 fi

@@ -15,7 +15,7 @@ requirements.check() {
 
   for requirement in $requirements; do
     hash "$requirement" 2>&-
-    
+
     if [ $? == 1 ]; then
       failureAction="failureActions__$requirement"
       if [ "${!failureAction}" == abort ]; then
@@ -26,10 +26,10 @@ requirements.check() {
       m.progress $index $count "${requirement} not found - installing"
       ${!failureAction} 2>&-
     fi
-    
+
     index=$((index + 1))
-    m.progress $index $count "${requirement} ✅   "
-    
+    m.progress $index $count "${requirement} ☑️   "
+
     sleep 0.1
   done;
 }
