@@ -5,7 +5,7 @@ flag._checkFlagFolderExists() {
   if [ $? == 1 ]; then
     return 1
   fi
-  if [ -d ./.dagon/flags/ ]; then
+  if [ -d ./flags/ ]; then
     return 0
   fi
   return 1
@@ -13,7 +13,7 @@ flag._checkFlagFolderExists() {
 flag.check() {
   flag._checkFlagFolderExists
   if [ $? != 1 ]; then
-    if [ -e "/usr/local/dagon/.dagon/flags/${1}" ]; then
+    if [ -e "/usr/local/dagon/flags/${1}" ]; then
       return 0
     fi
   fi
@@ -22,10 +22,10 @@ flag.check() {
 
 flag.set() {
   flag._checkFlagFolderExists
-  touch "/usr/local/dagon/.dagon/flags/${1}"
+  touch "/usr/local/dagon/flags/${1}"
 }
 
 flag.remove() {
   flag._checkFlagFolderExists
-  rm "/usr/local/dagon/.dagon/flags/${1}"
+  rm "/usr/local/dagon/flags/${1}"
 }
