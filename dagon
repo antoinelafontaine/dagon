@@ -72,8 +72,6 @@ requirements.set "easy_install pip crudini ansible"
   requirements.failure ansible "sudo pip install --quiet ansible"
 requirements.check
 
-exit 0
-
 configuration.setup
 
 flag.check config_repo
