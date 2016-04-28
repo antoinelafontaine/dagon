@@ -14,6 +14,11 @@ fi
 username=$USER
 export ANSIBLE_ASK_SUDO_PASS=True
 
+echo "$PATH" | grep -q 'Library/Python/2.7/bin'
+if [ $? == 0 ]; then
+  export PATH=$PATH:~/Library/Python/2.7/bin
+fi
+
 m.status "\nDagon will do your bidding. Sit back and enjoy...\n"
 sleep 0.5
 
@@ -63,9 +68,11 @@ requirements.check
 requirements.set "easy_install pip crudini ansible"
   requirements.failure easy_install abort
   requirements.failure pip "sudo easy_install --quiet pip"
-  requirements.failure crudini "export PATH=$PATH:~/Library/Python/2.7/bin && pip install --user --quiet crudini"
+  requirements.failure crudini "pip install --user --quiet crudini"
   requirements.failure ansible "sudo pip install --quiet ansible"
 requirements.check
+
+exit 0
 
 configuration.setup
 
