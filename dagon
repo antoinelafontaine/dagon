@@ -24,10 +24,12 @@ sleep 0.5
 
 flag.check symlink
 if [ $? == 1 ]; then
-  if [ -f /usr/local/dagon/dagon ]; then
-    m.status "Symlinking Dagon so is it available anywhere."
-    sudo chmod +x /usr/local/dagon/dagon
-    ln -sf /usr/local/dagon/dagon /usr/local/bin/dagon
+  if [ ! -L /usr/local/bin/dagon]; then
+    if [ -f /usr/local/dagon/dagon ]; then
+      m.status "Symlinking Dagon so is it available anywhere."
+      sudo chmod +x /usr/local/dagon/dagon
+      ln -sf /usr/local/dagon/dagon /usr/local/bin/dagon
+    fi
   fi
 
   flag.set symlink
@@ -36,9 +38,16 @@ fi
 flag.check folders
 if [ $? == 1 ]; then
   m.status "Creating necessary folders. (You will be asked for your sudo password if needed)"
-  sudo mkdir -p "/usr/local/dagon/roles"
-  sudo mkdir -p "/usr/local/dagon/flags"
-  mkdir -p "/Users/${username}/.dagon"
+  if [ ! -f /usr/local/dagon/roles ]; then
+    sudo mkdir -p "/usr/local/dagon/roles"
+  fi
+  if [ ! -f /usr/local/dagon/flags ]; then
+    sudo mkdir -p "/usr/local/dagon/flags"
+  fi
+  if [ ! -f /Users/${username}/.dagon ]; then
+    mkdir -p "/Users/${username}/.dagon"
+  fi
+
   sudo chmod -R g+rwx /usr/local
   sudo chgrp -R admin /usr/local
 
@@ -77,7 +86,7 @@ configuration.setup
 flag.check config_repo
 if [ $? == 1 ]; then
   m.status "Cloning configuration repository."
-  git clone --quiet $config_repo /usr/local/dagon/config
+  git clone --quiet $settings_repo "/Users/${username}/.dagon/settings"
   flag.set config_Repo
 fi
 
@@ -95,11 +104,11 @@ if [ $? == 1 ]; then
 fi
 
 m.status "\nGet requirements using Ansible Galaxy"
-ansible-galaxy install --role-file=config/requirements.yml --roles-path=roles
+ansible-galaxy install --role-file="/Users/${username}/.dagon/settings/requirements.yml" --roles-path=roles
 
-if [ -f "config/$username.yml" ]; then
+if [ -f "/Users/${username}/.dagon/settings/${username}.yml" ]; then
   m.status "\nRunnning Ansible playbook for $username."
-  ansible-playbook -i "localhost," config/$username.yml
+  ansible-playbook -i "localhost," "/Users/${username}/.dagon/settings/${username}.yml"
 else
   m.error "No Ansible playbook for $username found!"
 fi
