@@ -15,7 +15,7 @@ username=$USER
 export ANSIBLE_ASK_SUDO_PASS=True
 
 echo "$PATH" | grep -q 'Library/Python/2.7/bin'
-if [ $? == 0 ]; then
+if [ $? == 1 ]; then
   export PATH=$PATH:~/Library/Python/2.7/bin
 fi
 
