@@ -24,7 +24,7 @@ sleep 0.5
 
 flag.check symlink
 if [ $? == 1 ]; then
-  if [ ! -L /usr/local/bin/dagon]; then
+  if [ ! -L /usr/local/bin/dagon ]; then
     if [ -f /usr/local/dagon/dagon ]; then
       m.status "Symlinking Dagon so is it available anywhere."
       sudo chmod +x /usr/local/dagon/dagon
