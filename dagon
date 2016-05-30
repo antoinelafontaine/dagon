@@ -21,7 +21,7 @@ username=$USER
 export ANSIBLE_ASK_SUDO_PASS=True
 
 echo "$PATH" | grep -q 'Library/Python/2.7/bin'
-if [ lastCommand.failed ]; then
+if [ $? == 1 ]; then
   export PATH=$PATH:~/Library/Python/2.7/bin
 fi
 
@@ -29,7 +29,7 @@ m.status "\nDagon will do your bidding. Sit back and enjoy...\n"
 sleep 0.5
 
 flag.check symlink
-if [ check.failed ]; then
+if [ $? == 1 ]; then
   if [ ! -L /usr/local/bin/dagon ]; then
     if [ -f /usr/local/dagon/dagon ]; then
       m.status "Symlinking Dagon so is it available anywhere."
@@ -42,7 +42,7 @@ if [ check.failed ]; then
 fi
 
 flag.check folders
-if [ check.failed ]; then
+if [ $? == 1 ]; then
   m.status "Creating necessary folders. (You will be asked for your sudo password if needed)"
   if [ ! -d /usr/local/dagon/roles ]; then
     sudo mkdir -p "/usr/local/dagon/roles"
@@ -65,7 +65,7 @@ fi
 
 m.status "Checking bash requirements"
 flag.check bash_commands
-if [ check.failed ]; then
+if [ $? == 1 ]; then
   requirements.set "eval sleep printf read hash tput"
     requirements.failure eval abort
     requirements.failure sleep abort
@@ -93,7 +93,7 @@ requirements.check
 configuration.setup
 
 flag.check config_repo
-if [ check.failed ]; then
+if [ $? == 1 ]; then
   m.status "Cloning configuration repository."
   if [ ! -d "/Users/${username}/.dagon/settings/.git" ]; then
     git clone --quiet $settings_repo "/Users/${username}/.dagon/settings"
@@ -107,7 +107,7 @@ fi
 cd /usr/local/dagon
 
 flag.check ansible_config
-if [ check.failed ]; then
+if [ $? == 1 ]; then
   m.status "Creating ansible.cfg file."
   cat <<- --EOF > ansible.cfg
 	[defaults]
