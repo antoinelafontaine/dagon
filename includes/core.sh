@@ -67,17 +67,17 @@ lastCommand.not.failed() {
 }
 
 check.successful() {
-  lastCommand.successful
+  return lastCommand.successful
 }
 
 check.failed() {
-  lastCommand.failed
+  return lastCommand.failed
 }
 
 check.not.successful() {
-  lastCommand.not.successful
+  return lastCommand.not.successful
 }
 
 check.not.failed() {
-  lastCommand.not.failed
+  return lastCommand.not.failed
 }
