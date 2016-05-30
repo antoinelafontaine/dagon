@@ -118,8 +118,10 @@ if [ check.failed ]; then
   flag.set ansible_config
 fi
 
-m.status "\nGet requirements using Ansible Galaxy"
-ansible-galaxy install --role-file="/Users/${username}/.dagon/settings/requirements.yml" --roles-path=roles
+if [ $runmode == 'self-update' ]; then
+  m.status "\nGet requirements using Ansible Galaxy"
+  ansible-galaxy install --role-file="/Users/${username}/.dagon/settings/requirements.yml" --roles-path=roles
+fi
 
 if [ -f "/Users/${username}/.dagon/settings/${username}.yml" ]; then
   m.status "\nRunnning Ansible playbook for $username."
