@@ -4,8 +4,8 @@ function usage()
 {
     printf "Available parameters: \n"
     printf "\t-h --help\n"
-    printf "\t--self-update\n"
-    printf "\t--projects --projects-only\n"
+    printf "\t-u --self-update\n"
+    printf "\t-f --full\n"
 }
 
 while [ "$1" != "" ]; do
