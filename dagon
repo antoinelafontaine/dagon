@@ -125,10 +125,10 @@ fi
 
 if [ -f "/Users/${username}/.dagon/settings/${username}.yml" ]; then
   m.status "\nRunnning Ansible playbook for $username."
-  if [ $runmode == 'projects-only' ]; then
-    ansible-playbook -i "localhost," "/Users/${username}/.dagon/settings/${username}.yml" --tags "project"
-  else
+  if [ $runmode == 'full' ] || [ $runmode == 'self-update' ]; then
     ansible-playbook -i "localhost," "/Users/${username}/.dagon/settings/${username}.yml"
+  else
+    ansible-playbook -i "localhost," "/Users/${username}/.dagon/settings/${username}.yml" --tags "project"
   fi
 else
   m.error "No Ansible playbook for $username found!"

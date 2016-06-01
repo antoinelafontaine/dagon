@@ -16,11 +16,11 @@ while [ "$1" != "" ]; do
             usage
             exit
             ;;
-        --self-update)
+        -u | --self-update)
             runmode="self-update"
             ;;
-        --projects | --projects-only)
-            runmode="projects-only"
+        -f | --full)
+            runmode="full"
             ;;
         *)
             echo "Unknown parameter \"$PARAM\""
