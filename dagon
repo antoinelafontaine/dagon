@@ -27,7 +27,7 @@ if [ $runmode == 'interactive' ]; then
   fi
 
   if [ "$interactive_mode_input" == '2' ]; then
-    runmode='selfupdate'
+    runmode='self-update'
     m.status "${bold}[2] - Update Dagon then run in --full mode --self-update${normal}"
   elif [ "$interactive_mode_input" == '1' ]; then
     runmode='full'
