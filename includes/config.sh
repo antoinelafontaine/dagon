@@ -13,7 +13,7 @@ configuration.setup() {
 
   settings_repo="$(crudini --get /Users/$username/.dagonconfig core settings_repo)"
   if [ $? == 0 ]; then
-    m.status "Getting your personal and project settings from: ~/.dagon/settings (clone of $settings_repo)"
+    m.status "Getting your personal and project settings from: ${bold}~/.dagon/settings${normal} (clone of $settings_repo)"
   else
     m.status "\nSeems that your settings repository is not properly set."
     m.status "(This is the repo containing your personal settings and projects)"
@@ -34,7 +34,7 @@ configuration.setup() {
 
   project_base_path="$(crudini --get ~/.dagonconfig project project_base_path)"
   if [ -n "$project_base_path" ]; then
-    m.status "Projects will be created in: $project_base_path"
+    m.status "Projects will be created in: ${bold}$project_base_path${normal}"
   else
     m.status "\nSeems your base project path is not properly set."
     m.status "Where do you want your projects to be located on your local machine?"

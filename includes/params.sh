@@ -1,11 +1,12 @@
-runmode="normal"
+runmode="interactive"
 
 function usage()
 {
     printf "Available parameters: \n"
     printf "\t-h --help\n"
-    printf "\t--self-update\n"
-    printf "\t--projects --projects-only\n"
+    printf "\t-u --self-update\n"
+    printf "\t-f --full\n"
+    printf "\t-p --projects\n"
 }
 
 while [ "$1" != "" ]; do
@@ -21,6 +22,9 @@ while [ "$1" != "" ]; do
             ;;
         -f | --full)
             runmode="full"
+            ;;
+        -p | --projects)
+            runmode="projects"
             ;;
         *)
             echo "Unknown parameter \"$PARAM\""

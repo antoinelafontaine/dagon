@@ -1,5 +1,8 @@
 #!/bin/bash
 
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 flag._checkFlagFolderExists() {
   cd /usr/local/dagon 2>&-
   if [ $? == 1 ]; then

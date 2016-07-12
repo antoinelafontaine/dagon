@@ -12,6 +12,36 @@ fi
 . "$directory/includes/config.sh"
 . "$directory/includes/params.sh"
 
+if [ $runmode == 'interactive' ]; then
+  m.status "Run Dagon in what mode? [0]"
+  m.status "[0] - Projects only ${bold}--projects${normal}"
+  m.status "[1] - All projects and dependencies ${bold}--full${normal}"
+  m.status "[2] - Update Dagon then run in full mode ${bold}--self-update${normal}"
+
+  read -p "↪︎  " interactive_mode_input
+
+  runmode='unknown'
+
+  if [ "$interactive_mode_input" == '' ]; then
+    interactive_mode_input=0
+  fi
+
+  if [ "$interactive_mode_input" == '2' ]; then
+    runmode='selfupdate'
+    m.status "${bold}[2] - Update Dagon then run in --full mode --self-update${normal}"
+  elif [ "$interactive_mode_input" == '1' ]; then
+    runmode='full'
+    m.status "${bold}[1] - All projects and dependencies --full${normal}"
+  elif [ "$interactive_mode_input" == '0' ]; then
+    runmode='projects'
+    m.status "${bold}[0] - Projects only${normal}"
+  fi
+fi
+
+if [ $runmode == 'unknown' ]; then
+  m.error "Unknown mode!"
+fi
+
 if [ $runmode == 'self-update' ]; then
   flag.remove all
   rm -rf /usr/local/dagon/roles
