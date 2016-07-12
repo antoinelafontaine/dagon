@@ -141,7 +141,7 @@ if [ $? == 1 ]; then
   m.status "Creating ansible.cfg file."
   cat <<- --EOF > ansible.cfg
 	[defaults]
-	roles_path=/usr/local/dagon/roles/dev:/usr/local/dagon/roles:/usr/local/dagon/config/roles
+	roles_path=/usr/local/dagon/roles-dev:/usr/local/dagon/roles:/usr/local/dagon/config/roles
 	callback_plugins=/usr/local/dagon/plugins
 --EOF
 
